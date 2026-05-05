@@ -5,47 +5,37 @@ public class Libro {
     private String titulo;
     private String autor;
     private int clics;
+    private double precio;
+    private String portada;
 
     public Libro() {}
 
-    public Libro(Long id, String titulo, String autor, int clics) {
+    public Libro(Long id, String titulo, String autor, int clics, double precio, String portada) {
         this.id = id;
         this.titulo = titulo;
         this.autor = autor;
         this.clics = clics;
+        this.precio = precio;
+        this.portada = portada;
     }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getTitulo() { return titulo; }
+    public void setTitulo(String titulo) { this.titulo = titulo; }
 
-    public String getTitulo() {
-        return titulo;
-    }
+    public String getAutor() { return autor; }
+    public void setAutor(String autor) { this.autor = autor; }
 
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
+    public int getClics() { return clics; }
+    public void setClics(int clics) { this.clics = clics; }
 
-    public String getAutor() {
-        return autor;
-    }
+    public double getPrecio() { return precio; }
+    public void setPrecio(double precio) { this.precio = precio; }
 
-    public void setAutor(String autor) {
-        this.autor = autor;
-    }
-
-    public int getClics() {
-        return clics;
-    }
-
-    public void setClics(int clics) {
-        this.clics = clics;
-    }
+    public String getPortada() { return portada; }
+    public void setPortada(String portada) { this.portada = portada; }
 
     @Override
     public String toString() {
@@ -54,6 +44,8 @@ public class Libro {
                 ", titulo='" + titulo + '\'' +
                 ", autor='" + autor + '\'' +
                 ", clics=" + clics +
+                ", precio=" + precio +
+                ", portada='" + portada + '\'' +
                 '}';
     }
 }

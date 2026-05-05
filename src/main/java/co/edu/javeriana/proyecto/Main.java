@@ -18,9 +18,14 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         // Configuracion manual de dependencias (Arquitectura Limpia)
         LibroGateway libroGateway = new JdbcLibroGateway("jdbc:h2:./mylib");
+        co.edu.javeriana.proyecto.application.port.out.CarritoGateway carritoGateway = new co.edu.javeriana.proyecto.infrastructure.adapter.out.persistence.JdbcCarritoGateway("jdbc:h2:./mylib");
+        
         BuscarLibroUseCase buscarLibroUseCase = new BuscarLibroUseCase(libroGateway);
         ObtenerTendenciasUseCase obtenerTendenciasUseCase = new ObtenerTendenciasUseCase(libroGateway);
         IncrementarClicsUseCase incrementarClicsUseCase = new IncrementarClicsUseCase(libroGateway);
+        co.edu.javeriana.proyecto.application.usecase.AgregarAlCarritoUseCase agregarAlCarritoUseCase = new co.edu.javeriana.proyecto.application.usecase.AgregarAlCarritoUseCase(carritoGateway);
+        co.edu.javeriana.proyecto.application.usecase.EliminarDelCarritoUseCase eliminarDelCarritoUseCase = new co.edu.javeriana.proyecto.application.usecase.EliminarDelCarritoUseCase(carritoGateway);
+        co.edu.javeriana.proyecto.application.usecase.VerCarritoUseCase verCarritoUseCase = new co.edu.javeriana.proyecto.application.usecase.VerCarritoUseCase(carritoGateway);
 
         // Cargar vista FXML
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/BibliotecaView.fxml"));
@@ -29,7 +34,10 @@ public class Main extends Application {
         BibliotecaController controller = new BibliotecaController(
                 buscarLibroUseCase, 
                 obtenerTendenciasUseCase, 
-                incrementarClicsUseCase
+                incrementarClicsUseCase,
+                agregarAlCarritoUseCase,
+                eliminarDelCarritoUseCase,
+                verCarritoUseCase
         );
         loader.setController(controller);
 
