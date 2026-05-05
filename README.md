@@ -76,3 +76,34 @@ Maneja la presentación y la interacción del usuario.
 Entorno de pruebas automatizadas que utiliza una base de datos en memoria (`jdbc:h2:mem:testdb`). Asegura que las operaciones SQL funcionen correctamente y se destruye al terminar la prueba sin afectar los datos reales de la aplicación.
 
 > **Resumen:** Se ha diseñado un sistema donde la UI se comunica con los Casos de Uso, éstos con la Interfaz del Gateway, y finalmente la implementación en H2 maneja la persistencia. Esto garantiza un código escalable, fácil de mantener y de testear.
+
+---
+
+## Explicación de la Arquitectura - Historia (Carrito de Compras) - Versión 2
+
+En la **Versión 2 (v2)**, se implementó la gestión del Carrito de Compras manteniendo la filosofía de Arquitectura Limpia, sin romper lo que ya estaba hecho.
+
+### 1. Capa de Dominio
+* **`Libro.java`:** Se actualizó para incluir `precio` y `portada`.
+* **`CarritoItem.java`:** Se creó esta nueva entidad para representar "un renglón" del carrito, asociando un libro con su cantidad elegida, y un método para calcular su subtotal de forma dinámica.
+
+### 2. Capa de Aplicación
+Se creó el contrato o puerto de salida `CarritoGateway` y tres nuevos Casos de Uso:
+* **`AgregarAlCarritoUseCase`, `EliminarDelCarritoUseCase`, `VerCarritoUseCase`:** Clases puras que intermedian entre la interfaz gráfica y la persistencia.
+
+### 3. Capa de Infraestructura: Persistencia
+* **`JdbcLibroGateway.java`:** Modificado para inyectar precios reales al momento de crear la base de datos `mylib.mv.db`.
+* **`JdbcCarritoGateway.java`:** Nueva clase que crea y gestiona la tabla `carrito_items`. Implementa operaciones de `UPDATE` para sumar cantidades si el libro ya está, e `INSERT` si no lo está. Utiliza `JOIN` para unir la tabla de libros con el carrito y devolver los datos completos al usuario.
+
+### 4. Capa de Infraestructura: Interfaz Gráfica
+* **`BibliotecaView.fxml`:** Se añadió un contenedor dinámico (`StackPane`) que permite alternar la vista entre el Catálogo y el Carrito. Se integró el botón "🛒 Ver Carrito".
+* **`BibliotecaController.java`:** 
+  * Se genera y asigna un **Session ID (`UUID`)** único en memoria para no mezclar carritos.
+  * Se asignan hilos secundarios (`Task`) para añadir y eliminar del carrito sin congelar la pantalla.
+  * Colecciones `ObservableList<CarritoItem>` mantienen actualizado el total a pagar y la cantidad del botón superior en tiempo real.
+
+### 5. Configuración y Pruebas
+* **`Main.java`:** Se instanciaron manualmente las dependencias de los 3 nuevos Casos de Uso y se inyectaron en el Controlador.
+* **`JdbcCarritoGatewayTest.java`:** Pruebas automatizadas en H2 (`jdbc:h2:mem:test_carrito`) validando sumas, eliminaciones y cálculo de subtotales.
+
+> Puedes explorar el repositorio navegando por la rama/tag `v1` (solo búsqueda) y `v2` (búsqueda + carrito) para ver paso a paso cómo evolucionó el código bajo esta arquitectura.
