@@ -1,8 +1,12 @@
 # OpenLib Market - Plan de Entrega 1 (MVP)
 
-Este repositorio contiene la primera versión del proyecto **OpenLib Market**, estructurado bajo el patrón de **Arquitectura Limpia (Clean Architecture)**. 
+Este repositorio contiene la **primera versión inicial** del proyecto **OpenLib Market**, estructurado bajo el patrón de **Arquitectura Limpia (Clean Architecture)**. 
 
-## Alcance Funcional Entrega 1
+> **Estado Actual del Proyecto:** Actualmente, este repositorio **solo contiene la implementación de la primera historia de usuario ("Buscar Libro" y funcionalidades relacionadas)**. A medida que el desarrollo avance, se irán realizando commits integrando los demás módulos descritos a continuación.
+
+## Alcance Funcional Planeado (MVP)
+
+A continuación se describe el plan del alcance funcional total que tendrá el MVP una vez se completen las entregas:
 
 ### MÓDULO DE BUYER (Storefront)
 * **Registro y login (PROYECTOSW-26):** Autenticación y control de roles de usuario.
