@@ -107,3 +107,40 @@ Se creó el contrato o puerto de salida `CarritoGateway` y tres nuevos Casos de 
 * **`JdbcCarritoGatewayTest.java`:** Pruebas automatizadas en H2 (`jdbc:h2:mem:test_carrito`) validando sumas, eliminaciones y cálculo de subtotales.
 
 > Puedes explorar el repositorio navegando por la rama/tag `v1` (solo búsqueda) y `v2` (búsqueda + carrito) para ver paso a paso cómo evolucionó el código bajo esta arquitectura.
+
+---
+
+## Explicación de la Arquitectura - Historia (Registro de Usuarios) - Versión 3
+
+En la **Versión 3 (v3)**, se implementó el módulo de Registro de Usuarios y un rediseño visual inmersivo completo, manteniendo la filosofía de Arquitectura Limpia sin romper lo ya construido.
+
+### 1. Capa de Dominio
+* **`Usuario.java`:** Se creó la entidad para representar a un usuario en el sistema, con los atributos `id`, `email`, `passwordHash`, `nombre` y estado `activo`.
+* **`UsuarioYaExisteException.java`:** Se creó esta excepción de negocio (pura) para manejar la regla de dominio que impide registrar dos veces el mismo correo electrónico.
+
+### 2. Capa de Aplicación
+Se creó el contrato o puerto de salida `UsuarioGateway` y un nuevo Caso de Uso:
+* **`RegistrarUsuarioUseCase.java`:** Clase pura que intermedia entre la interfaz y la persistencia. Se encarga de aplicar la regla de negocio: verifica si el correo ya existe, encripta la contraseña en texto plano utilizando **BCrypt**, y finalmente llama al gateway para persistir la información segura.
+
+### 3. Capa de Infraestructura: Persistencia
+* **`JdbcUsuarioGateway.java`:** Nueva clase que crea y gestiona la tabla `usuarios` en H2. Define el campo `email` con la restricción `UNIQUE`. Implementa las operaciones SQL (`INSERT` para registrar y `SELECT` para verificar la existencia del correo) a través de JDBC puro.
+
+### 4. Capa de Infraestructura: Interfaz Gráfica
+* **`RegistroView.fxml`:** Se diseñó una nueva vista modal (ventana emergente) limpia y moderna, con campos de texto para nombre, email y contraseña, además de mensajes de error en tiempo real.
+* **`RegistroController.java`:**
+  * Se encarga de capturar la interacción del usuario en la ventana de registro.
+  * Se asignan hilos secundarios (`Task`) para procesar la encriptación de BCrypt y la inserción en base de datos de manera asíncrona, evitando congelar la interfaz principal.
+  * Gestiona las alertas visuales y el cierre automático del modal tras un registro exitoso.
+* **`BibliotecaView.fxml` y `BibliotecaController.java` (Rediseño Visual v3):**
+  * La pantalla principal fue rediseñada con un sistema de capas (`StackPane`) que permite mostrar una imagen de fondo de pantalla completa de forma inmersiva.
+  * Se implementó un **carrusel automático** de 3 imágenes artísticas que rotan mediante una animación suave de desvanecimiento (`FadeTransition`) cada 7 segundos usando un `Timeline` cíclico.
+  * Se implementó un **efecto de desenfoque dinámico** (`GaussianBlur`) sobre el fondo: al hacer clic en el buscador el fondo se difumina levemente y al escribir se desenfoca completamente para dar protagonismo a los resultados.
+  * Se añadió una **Frase del Día** de autores célebres (Borges, Kafka, García Márquez, Cervantes, etc.) que rota aleatoriamente junto al cambio de imagen de fondo.
+  * El flujo de registro fue integrado directamente dentro del **Carrito de Compras** como un botón de "Continuar con el proceso", haciendo el flujo de compra más natural.
+
+### 5. Configuración y Pruebas
+* **`pom.xml`:** Se integró la librería de seguridad `org.mindrot:jbcrypt` para garantizar un cifrado profesional de las contraseñas.
+* **`Main.java`:** Se instanció manualmente el nuevo `JdbcUsuarioGateway` junto con el `RegistrarUsuarioUseCase`, inyectándolos en la cascada de dependencias hasta llegar al controlador.
+* **`JdbcUsuarioGatewayTest.java`:** Pruebas automatizadas en H2 en memoria que validan tanto la correcta persistencia de un usuario nuevo como el comportamiento esperado (lanzamiento de excepción) al intentar insertar correos duplicados.
+
+> Puedes explorar el repositorio navegando por los tags `v1` (búsqueda), `v2` (búsqueda + carrito) y `v3` (registro + rediseño visual inmersivo) para ver paso a paso cómo evolucionó el código bajo esta arquitectura.

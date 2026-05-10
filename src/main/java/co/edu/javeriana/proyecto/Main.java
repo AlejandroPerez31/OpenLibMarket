@@ -19,6 +19,7 @@ public class Main extends Application {
         // Configuracion manual de dependencias (Arquitectura Limpia)
         LibroGateway libroGateway = new JdbcLibroGateway("jdbc:h2:./mylib");
         co.edu.javeriana.proyecto.application.port.out.CarritoGateway carritoGateway = new co.edu.javeriana.proyecto.infrastructure.adapter.out.persistence.JdbcCarritoGateway("jdbc:h2:./mylib");
+        co.edu.javeriana.proyecto.application.port.out.UsuarioGateway usuarioGateway = new co.edu.javeriana.proyecto.infrastructure.adapter.out.persistence.JdbcUsuarioGateway("jdbc:h2:./mylib");
         
         BuscarLibroUseCase buscarLibroUseCase = new BuscarLibroUseCase(libroGateway);
         ObtenerTendenciasUseCase obtenerTendenciasUseCase = new ObtenerTendenciasUseCase(libroGateway);
@@ -26,6 +27,7 @@ public class Main extends Application {
         co.edu.javeriana.proyecto.application.usecase.AgregarAlCarritoUseCase agregarAlCarritoUseCase = new co.edu.javeriana.proyecto.application.usecase.AgregarAlCarritoUseCase(carritoGateway);
         co.edu.javeriana.proyecto.application.usecase.EliminarDelCarritoUseCase eliminarDelCarritoUseCase = new co.edu.javeriana.proyecto.application.usecase.EliminarDelCarritoUseCase(carritoGateway);
         co.edu.javeriana.proyecto.application.usecase.VerCarritoUseCase verCarritoUseCase = new co.edu.javeriana.proyecto.application.usecase.VerCarritoUseCase(carritoGateway);
+        co.edu.javeriana.proyecto.application.usecase.RegistrarUsuarioUseCase registrarUsuarioUseCase = new co.edu.javeriana.proyecto.application.usecase.RegistrarUsuarioUseCase(usuarioGateway);
 
         // Cargar vista FXML
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/BibliotecaView.fxml"));
@@ -37,7 +39,8 @@ public class Main extends Application {
                 incrementarClicsUseCase,
                 agregarAlCarritoUseCase,
                 eliminarDelCarritoUseCase,
-                verCarritoUseCase
+                verCarritoUseCase,
+                registrarUsuarioUseCase
         );
         loader.setController(controller);
 
