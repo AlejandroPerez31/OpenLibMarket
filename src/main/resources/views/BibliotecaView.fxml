@@ -9,45 +9,76 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.image.ImageView?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" style="-fx-background-color: #f4f6f9; -fx-font-family: 'Segoe UI', sans-serif;">
-    <top>
-        <VBox alignment="CENTER" spacing="10" style="-fx-background-color: #2c3e50; -fx-padding: 20px;">
-            <Label text="📚 MyLib - Biblioteca Virtual" style="-fx-font-size: 28px; -fx-text-fill: white; -fx-font-weight: bold;"/>
-            <Label text="Encuentra tus libros favoritos y descubre tendencias" style="-fx-font-size: 14px; -fx-text-fill: #bdc3c7;"/>
-            <Button fx:id="btnToggleView" text="🛒 Ver Carrito (0)" style="-fx-font-weight: bold; -fx-background-color: #f39c12; -fx-text-fill: white; -fx-padding: 5 15 5 15; -fx-background-radius: 5;"/>
-        </VBox>
-    </top>
+<StackPane xmlns:fx="http://javafx.com/fxml/1" style="-fx-font-family: 'Segoe UI', sans-serif; -fx-background-color: #1a252f;">
     
-    <center>
-        <StackPane>
-            <VBox fx:id="vboxBusqueda" spacing="15" style="-fx-padding: 20px;">
-                <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Label text="🔍 Buscar:" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #34495e;"/>
-                    <TextField fx:id="txtBusqueda" promptText="Escribe el título del libro..." style="-fx-pref-width: 400px; -fx-font-size: 14px; -fx-background-radius: 5px; -fx-border-radius: 5px; -fx-border-color: #bdc3c7; -fx-padding: 5px;" />
+    <!-- Capa Base: Fondo inmersivo con imágenes -->
+    <StackPane fx:id="paneFondoBase">
+        <ImageView fx:id="imgFondo1" preserveRatio="false" smooth="true" />
+        <ImageView fx:id="imgFondo2" preserveRatio="false" smooth="true" opacity="0.0" />
+        <!-- Capa oscura para mejorar legibilidad del texto -->
+        <Region style="-fx-background-color: rgba(26, 37, 47, 0.6);" />
+    </StackPane>
+
+    <!-- Capa Superior: Interfaz -->
+    <BorderPane>
+        <top>
+            <!-- Header completamente transparente para integrarse con el fondo -->
+            <VBox alignment="CENTER" spacing="10" style="-fx-padding: 30px 20px 10px 20px; -fx-background-color: transparent;">
+                <Label text="📚 MyLib" style="-fx-font-size: 32px; -fx-text-fill: white; -fx-font-weight: bold; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0, 0, 2);"/>
+                <HBox alignment="CENTER" style="-fx-padding: 10px 0 0 0;">
+                    <Button fx:id="btnToggleView" text="🛒 Ver Carrito (0)" style="-fx-background-color: rgba(52, 73, 94, 0.7); -fx-text-fill: #f39c12; -fx-font-size: 15px; -fx-font-weight: bold; -fx-padding: 10px 25px; -fx-background-radius: 30px; -fx-cursor: hand; -fx-border-color: #f39c12; -fx-border-width: 2px; -fx-border-radius: 30px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 5, 0, 0, 2);"/>
                 </HBox>
+            </VBox>
+        </top>
+        
+        <center>
+            <StackPane>
+                <!-- Sección de Búsqueda Centrada -->
+                <VBox fx:id="vboxBusqueda" spacing="20" alignment="CENTER" style="-fx-padding: 40px;">
+                    
+                    <VBox alignment="CENTER" spacing="15">
+                        <Label fx:id="lblFraseDia" text="Un libro es un sueño que tienes en tus manos." style="-fx-font-size: 32px; -fx-text-fill: white; -fx-font-weight: bold; -fx-text-alignment: center;" wrapText="true"/>
+                        <Label text="Descubre mundos increíbles en nuestra colección digital abierta." style="-fx-font-size: 18px; -fx-text-fill: #ecf0f1; -fx-text-alignment: center;" wrapText="true"/>
+                    </VBox>
+
+                    <HBox spacing="10" alignment="CENTER" style="-fx-padding: 20px 0 20px 0;">
+                        <TextField fx:id="txtBusqueda" promptText="Escribe el título, autor o tema del libro..." style="-fx-pref-width: 600px; -fx-font-size: 18px; -fx-background-radius: 30px; -fx-border-radius: 30px; -fx-padding: 15px 25px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 5);" />
+                    </HBox>
+                    
+                    <VBox fx:id="vboxResultadosContainer" VBox.vgrow="ALWAYS" spacing="10" visible="false" managed="false" style="-fx-background-color: rgba(255, 255, 255, 0.9); -fx-background-radius: 15px; -fx-padding: 20px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 20, 0, 0, 10);">
+                        <Label text="Resultados de la búsqueda" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2980b9;"/>
+                        <ListView fx:id="listResultados" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-control-inner-background: transparent;" />
+                        <Label fx:id="lblEstado" text="Listo" style="-fx-text-fill: #7f8c8d; -fx-font-size: 12px;"/>
+                    </VBox>
+                </VBox>
                 
-                <Label text="Resultados de la búsqueda" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2980b9;"/>
-                <ListView fx:id="listResultados" VBox.vgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 5px; -fx-border-radius: 5px; -fx-border-color: #ecf0f1;" />
-                <Label fx:id="lblEstado" text="Listo" style="-fx-text-fill: #7f8c8d; -fx-font-size: 12px;"/>
+                <!-- Sección del Carrito -->
+                <VBox fx:id="vboxCarrito" spacing="15" style="-fx-padding: 40px; -fx-background-color: rgba(255, 255, 255, 0.95); -fx-background-radius: 15px; -fx-margin: 20px;" visible="false">
+                    <Label text="🛒 Tu Carrito de Compras" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2980b9;"/>
+                    <ListView fx:id="listCarrito" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-control-inner-background: transparent;" />
+                    <HBox alignment="CENTER_RIGHT" spacing="15">
+                        <Label text="Total a pagar:" style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+                        <Label fx:id="lblTotalCarrito" text="\$0.00" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #e74c3c;"/>
+                    </HBox>
+                    <HBox alignment="CENTER_RIGHT">
+                        <Button fx:id="btnContinuarProceso" text="Continuar con el proceso" style="-fx-font-weight: bold; -fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-size: 18px; -fx-padding: 12px 30px; -fx-background-radius: 30px; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);"/>
+                    </HBox>
+                </VBox>
+            </StackPane>
+        </center>
+        
+        <right>
+            <VBox spacing="10" style="-fx-padding: 20px; -fx-background-color: rgba(20, 30, 40, 0.5); -fx-background-radius: 15px; -fx-pref-width: 350px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 15, 0, 0, 5);">
+                <BorderPane.margin>
+                    <Insets top="20" right="20" bottom="20" left="10" />
+                </BorderPane.margin>
+                <Label text="🔥 Tendencias" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #f39c12;"/>
+                <Label text="Los libros más consultados" style="-fx-font-size: 14px; -fx-text-fill: #ecf0f1; -fx-font-weight: bold;"/>
+                <ListView fx:id="listTendencias" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-control-inner-background: transparent; -fx-border-color: transparent;" />
             </VBox>
-            
-            <VBox fx:id="vboxCarrito" spacing="15" style="-fx-padding: 20px;" visible="false">
-                <Label text="🛒 Tu Carrito de Compras" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2980b9;"/>
-                <ListView fx:id="listCarrito" VBox.vgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 5px; -fx-border-color: #ecf0f1;" />
-                <HBox alignment="CENTER_RIGHT" spacing="15">
-                    <Label text="Total a pagar:" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
-                    <Label fx:id="lblTotalCarrito" text="\$0.00" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #e74c3c;"/>
-                </HBox>
-            </VBox>
-        </StackPane>
-    </center>
-    
-    <right>
-        <VBox spacing="10" style="-fx-padding: 20px; -fx-background-color: #ecf0f1; -fx-pref-width: 300px;">
-            <Label text="🔥 Tendencias" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #e74c3c;"/>
-            <Label text="Los libros más consultados" style="-fx-font-size: 12px; -fx-text-fill: #7f8c8d;"/>
-            <ListView fx:id="listTendencias" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-control-inner-background: transparent; -fx-border-color: transparent;" />
-        </VBox>
-    </right>
-</BorderPane>
+        </right>
+    </BorderPane>
+</StackPane>
