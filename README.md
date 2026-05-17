@@ -143,4 +143,31 @@ Se creó el contrato o puerto de salida `UsuarioGateway` y un nuevo Caso de Uso:
 * **`Main.java`:** Se instanció manualmente el nuevo `JdbcUsuarioGateway` junto con el `RegistrarUsuarioUseCase`, inyectándolos en la cascada de dependencias hasta llegar al controlador.
 * **`JdbcUsuarioGatewayTest.java`:** Pruebas automatizadas en H2 en memoria que validan tanto la correcta persistencia de un usuario nuevo como el comportamiento esperado (lanzamiento de excepción) al intentar insertar correos duplicados.
 
-> Puedes explorar el repositorio navegando por los tags `v1` (búsqueda), `v2` (búsqueda + carrito) y `v3` (registro + rediseño visual inmersivo) para ver paso a paso cómo evolucionó el código bajo esta arquitectura.
+> Puedes explorar el repositorio navegando por los tags `v1` (búsqueda), `v2` (búsqueda + carrito), `v3` (registro + rediseño) y `v4` (sistema completo) para ver paso a paso cómo evolucionó el código bajo esta arquitectura.
+
+---
+
+## Explicación de la Arquitectura - Historia (Sistema Completo Casit) - Versión 4
+
+En la **Versión 4 (v4)**, el proyecto alcanzó la funcionalidad requerida del módulo BUYER integrando características avanzadas de seguridad, facturación e historial.
+
+### 1. Capa de Dominio
+* **`Orden.java` y `Compra.java`:** Entidades encargadas de gestionar el estado de los pedidos y registrar los items adquiridos.
+* **Excepciones de Negocio:** Se añadieron `CredencialesInvalidasException` y `UsuarioBloqueadoException` para manejar las reglas de autenticación (como bloquear una cuenta tras 3 intentos fallidos).
+
+### 2. Capa de Aplicación
+Se agregaron nuevos casos de uso que encapsulan lógicas complejas:
+* **Autenticación:** `LoginUsuarioUseCase` y `CambiarContrasenaUseCase`.
+* **Procesamiento:** `CheckoutController` utiliza `RegistrarCompraUseCase` y limpia la sesión con `LimpiarCarritoUseCase`.
+* **Generación de Archivos:** `GenerarFacturaPdfUseCase` es un caso de uso independiente que toma una orden finalizada y emite un PDF directamente.
+* **Historial y Biblioteca:** `ObtenerHistorialOrdenesUseCase` y `ObtenerBibliotecaPersonalUseCase` traen los libros comprados.
+* **Búsqueda:** Se optimizó con `BuscarLibroAvanzadoUseCase`.
+
+### 3. Capa de Infraestructura: Interfaz Gráfica
+Se incorporaron y diseñaron nuevas pantallas (FXML + Controllers):
+* **`LoginView.fxml` y `CambiarPasswordView.fxml`:** Integradas al flujo de seguridad.
+* **`CheckoutView.fxml`:** Simula el entorno de pago y confirma transacciones.
+* **`HistorialComprasView.fxml` y `BibliotecaPersonalView.fxml`:** Proveen un dashboard al usuario donde pueden consultar sus facturas (PDFs) y ver sus títulos adquiridos de manera segura.
+
+### 4. Configuración
+* La inyección de dependencias manual se amplió en `Main.java` para acomodar la nueva red de repositorios y controladores.
