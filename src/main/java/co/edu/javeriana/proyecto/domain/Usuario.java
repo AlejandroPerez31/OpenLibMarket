@@ -6,6 +6,7 @@ public class Usuario {
     private String passwordHash;
     private String nombre;
     private boolean activo;
+    private int intentosFallidos;
 
     public Usuario() {}
 
@@ -15,6 +16,16 @@ public class Usuario {
         this.passwordHash = passwordHash;
         this.nombre = nombre;
         this.activo = activo;
+        this.intentosFallidos = 0;
+    }
+
+    public Usuario(Long id, String email, String passwordHash, String nombre, boolean activo, int intentosFallidos) {
+        this.id = id;
+        this.email = email;
+        this.passwordHash = passwordHash;
+        this.nombre = nombre;
+        this.activo = activo;
+        this.intentosFallidos = intentosFallidos;
     }
 
     public Long getId() { return id; }
@@ -31,4 +42,7 @@ public class Usuario {
 
     public boolean isActivo() { return activo; }
     public void setActivo(boolean activo) { this.activo = activo; }
+
+    public int getIntentosFallidos() { return intentosFallidos; }
+    public void setIntentosFallidos(int intentosFallidos) { this.intentosFallidos = intentosFallidos; }
 }
