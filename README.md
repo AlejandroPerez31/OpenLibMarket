@@ -143,7 +143,7 @@ Se creó el contrato o puerto de salida `UsuarioGateway` y un nuevo Caso de Uso:
 * **`Main.java`:** Se instanció manualmente el nuevo `JdbcUsuarioGateway` junto con el `RegistrarUsuarioUseCase`, inyectándolos en la cascada de dependencias hasta llegar al controlador.
 * **`JdbcUsuarioGatewayTest.java`:** Pruebas automatizadas en H2 en memoria que validan tanto la correcta persistencia de un usuario nuevo como el comportamiento esperado (lanzamiento de excepción) al intentar insertar correos duplicados.
 
-> Puedes explorar el repositorio navegando por los tags `v1` (búsqueda), `v2` (búsqueda + carrito), `v3` (registro + rediseño) y `v4` (sistema completo) para ver paso a paso cómo evolucionó el código bajo esta arquitectura.
+> Puedes explorar el repositorio navegando por los tags `v1`, `v2`, `v3`, `v4` y `v5` para ver paso a paso cómo evolucionó el código bajo esta arquitectura.
 
 ---
 
@@ -153,21 +153,33 @@ En la **Versión 4 (v4)**, el proyecto alcanzó la funcionalidad requerida del m
 
 ### 1. Capa de Dominio
 * **`Orden.java` y `Compra.java`:** Entidades encargadas de gestionar el estado de los pedidos y registrar los items adquiridos.
-* **Excepciones de Negocio:** Se añadieron `CredencialesInvalidasException` y `UsuarioBloqueadoException` para manejar las reglas de autenticación (como bloquear una cuenta tras 3 intentos fallidos).
+* **Excepciones de Negocio:** Se añadieron `CredencialesInvalidasException` y `UsuarioBloqueadoException`.
 
 ### 2. Capa de Aplicación
-Se agregaron nuevos casos de uso que encapsulan lógicas complejas:
 * **Autenticación:** `LoginUsuarioUseCase` y `CambiarContrasenaUseCase`.
-* **Procesamiento:** `CheckoutController` utiliza `RegistrarCompraUseCase` y limpia la sesión con `LimpiarCarritoUseCase`.
-* **Generación de Archivos:** `GenerarFacturaPdfUseCase` es un caso de uso independiente que toma una orden finalizada y emite un PDF directamente.
+* **Procesamiento:** `CheckoutController` utiliza `RegistrarCompraUseCase`.
+* **Generación de Archivos:** `GenerarFacturaPdfUseCase` toma una orden finalizada y emite un PDF directamente.
 * **Historial y Biblioteca:** `ObtenerHistorialOrdenesUseCase` y `ObtenerBibliotecaPersonalUseCase` traen los libros comprados.
 * **Búsqueda:** Se optimizó con `BuscarLibroAvanzadoUseCase`.
 
 ### 3. Capa de Infraestructura: Interfaz Gráfica
-Se incorporaron y diseñaron nuevas pantallas (FXML + Controllers):
 * **`LoginView.fxml` y `CambiarPasswordView.fxml`:** Integradas al flujo de seguridad.
 * **`CheckoutView.fxml`:** Simula el entorno de pago y confirma transacciones.
-* **`HistorialComprasView.fxml` y `BibliotecaPersonalView.fxml`:** Proveen un dashboard al usuario donde pueden consultar sus facturas (PDFs) y ver sus títulos adquiridos de manera segura.
+* **`HistorialComprasView.fxml` y `BibliotecaPersonalView.fxml`:** Proveen un dashboard al usuario.
 
-### 4. Configuración
-* La inyección de dependencias manual se amplió en `Main.java` para acomodar la nueva red de repositorios y controladores.
+---
+
+## Mejoras de Rendimiento y Archivos Reales - Versión 5
+
+En la **Versión 5 (v5)**, se introdujeron mejoras importantes de calidad de vida y se incluyeron los libros reales en el sistema:
+
+### 1. Sistema de Caché de Imágenes
+* **`BibliotecaController.java`:** Se implementó una memoria caché estática (`imageCache`) para las portadas de los libros. Esto mejora dramáticamente el rendimiento gráfico de la aplicación, previniendo que se descargue o decodifique la misma imagen múltiples veces.
+
+### 2. Procesamiento de PDFs Reales
+* **`BibliotecaPersonalController.java`:** Dejó de generar archivos de texto simulados y ahora interactúa con PDFs físicos:
+  * **Descarga Segura:** Transmite el contenido binario del PDF en `src/main/resources/books/` hacia la ruta elegida por el usuario.
+  * **Lectura en Línea:** Copia el PDF a un archivo temporal y utiliza `java.awt.Desktop.getDesktop().open()` para delegar la apertura del eBook al visor nativo del sistema operativo del usuario.
+
+### 3. Archivos Embebidos
+* Se añadieron 12 libros y guías reales (Clean Code, Effective Java, Sapiens, 1984, etc.) al directorio `resources` de la aplicación, consolidando una experiencia completa.

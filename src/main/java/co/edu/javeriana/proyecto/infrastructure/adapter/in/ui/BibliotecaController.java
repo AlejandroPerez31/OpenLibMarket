@@ -572,6 +572,16 @@ public class BibliotecaController {
                 HBox box = new HBox(10);
                 box.prefWidthProperty().bind(getListView().widthProperty().subtract(30));
                 
+                ImageView imgPortada = new ImageView();
+                try {
+                    Image cachedImg = getCachedImage(libro.getPortada(), 50, 75);
+                    if (cachedImg != null) {
+                        imgPortada.setImage(cachedImg);
+                    }
+                } catch (Exception e) {
+                    System.err.println("No se pudo cargar la portada: " + e.getMessage());
+                }
+
                 VBox textInfo = new VBox();
                 textInfo.setMinWidth(0); 
                 HBox.setHgrow(textInfo, Priority.ALWAYS); 
@@ -606,7 +616,7 @@ public class BibliotecaController {
                     });
                 }
 
-                box.getChildren().addAll(textInfo, btnAdd);
+                box.getChildren().addAll(imgPortada, textInfo, btnAdd);
                 setGraphic(box);
             }
         }
@@ -623,6 +633,16 @@ public class BibliotecaController {
                 HBox box = new HBox(10);
                 box.prefWidthProperty().bind(getListView().widthProperty().subtract(30));
                 
+                ImageView imgPortada = new ImageView();
+                try {
+                    Image cachedImg = getCachedImage(libro.getPortada(), 40, 60);
+                    if (cachedImg != null) {
+                        imgPortada.setImage(cachedImg);
+                    }
+                } catch (Exception e) {
+                    System.err.println("No se pudo cargar la portada: " + e.getMessage());
+                }
+
                 VBox textInfo = new VBox();
                 textInfo.setMinWidth(0);
                 HBox.setHgrow(textInfo, Priority.ALWAYS);
@@ -641,9 +661,39 @@ public class BibliotecaController {
                 btnRemove.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-cursor: hand; -fx-font-weight: bold;");
                 btnRemove.setOnAction(e -> eliminarDelCarrito(libro));
 
-                box.getChildren().addAll(textInfo, btnRemove);
+                box.getChildren().addAll(imgPortada, textInfo, btnRemove);
                 setGraphic(box);
             }
+        }
+    }
+
+    private static final java.util.Map<String, Image> imageCache = new java.util.HashMap<>();
+    
+    private static Image getCachedImage(String url, double requestedWidth, double requestedHeight) {
+        if (url == null || url.trim().isEmpty()) {
+            return null;
+        }
+        String key = url + "_" + requestedWidth + "_" + requestedHeight;
+        if (imageCache.containsKey(key)) {
+            return imageCache.get(key);
+        }
+        try {
+            Image img;
+            if (url.startsWith("http://") || url.startsWith("https://")) {
+                img = new Image(url, requestedWidth, requestedHeight, true, true);
+            } else {
+                var resource = BibliotecaController.class.getResource(url);
+                if (resource != null) {
+                    img = new Image(resource.toExternalForm(), requestedWidth, requestedHeight, true, true);
+                } else {
+                    img = new Image(url, requestedWidth, requestedHeight, true, true);
+                }
+            }
+            imageCache.put(key, img);
+            return img;
+        } catch (Exception e) {
+            System.err.println("Error loading image: " + url + " - " + e.getMessage());
+            return null;
         }
     }
 }
